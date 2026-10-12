@@ -38,11 +38,9 @@ jobs:
 
       - name: Write .env.local from repository variables
         run: |
-          cat > .env.local <<'EOF'
-          VITE_NETEASE_API_BASE=${{ vars.NETEASE_API_BASE || '' }}
-          VITE_KUGOU_API_BASE=${{ vars.KUGOU_API_BASE || '' }}
-          VITE_FOLIA_API_BASE=${{ vars.FOLIA_API_BASE || '' }}
-          EOF
+          printf 'VITE_NETEASE_API_BASE=%s\n' '${{ vars.NETEASE_API_BASE || '' }}' > .env.local
+          printf 'VITE_KUGOU_API_BASE=%s\n' '${{ vars.KUGOU_API_BASE || '' }}' >> .env.local
+          printf 'VITE_FOLIA_API_BASE=%s\n' '${{ vars.FOLIA_API_BASE || '' }}' >> .env.local
 
       - name: npm ci
         run: npm ci
@@ -64,13 +62,11 @@ jobs:
       - name: Prepare release signing
         if: secrets.KEYSTORE_BASE64 != ''
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/tianfu-release.jks
-          cat > android/keystore.properties <<EOF
-          storeFile=tianfu-release.jks
-          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
-          keyAlias=${{ secrets.KEY_ALIAS }}
-          keyPassword=${{ secrets.KEY_PASSWORD }}
-          EOF
+          printf '%s' '${{ secrets.KEYSTORE_BASE64 }}' | base64 -d > android/tianfu-release.jks
+          printf 'storeFile=tianfu-release.jks\n' > android/keystore.properties
+          printf 'storePassword=%s\n' '${{ secrets.KEYSTORE_PASSWORD }}' >> android/keystore.properties
+          printf 'keyAlias=%s\n' '${{ secrets.KEY_ALIAS }}' >> android/keystore.properties
+          printf 'keyPassword=%s\n' '${{ secrets.KEY_PASSWORD }}' >> android/keystore.properties
 
       - name: Assemble release APK
         if: secrets.KEYSTORE_BASE64 != ''
