@@ -37,11 +37,11 @@ jobs:
         run: |
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
 
-      - name: Write .env.local from repository variables
+      - name: Write .env.local (server addresses; repository Variables override)
         run: |
-          printf 'VITE_NETEASE_API_BASE=%s\n' '${{ vars.NETEASE_API_BASE || '' }}' > .env.local
-          printf 'VITE_KUGOU_API_BASE=%s\n' '${{ vars.KUGOU_API_BASE || '' }}' >> .env.local
-          printf 'VITE_FOLIA_API_BASE=%s\n' '${{ vars.FOLIA_API_BASE || '' }}' >> .env.local
+          printf 'VITE_NETEASE_API_BASE=%s\n' '${{ vars.NETEASE_API_BASE || 'http://193.112.22.155:18080/netease' }}' > .env.local
+          printf 'VITE_KUGOU_API_BASE=%s\n' '${{ vars.KUGOU_API_BASE || 'http://193.112.22.155:18080/kugou' }}' >> .env.local
+          printf 'VITE_FOLIA_API_BASE=%s\n' '${{ vars.FOLIA_API_BASE || 'http://193.112.22.155:18080/api' }}' >> .env.local
 
       - name: npm ci
         run: npm ci
