@@ -40,3 +40,7 @@
 ## 致谢
 
 感谢 Folia 主项目 [chthollyphile/folia-major](https://github.com/chthollyphile/folia-major) 及其贡献者。
+
+## 构建状态
+
+[![Build Android APK](https://github.com/cehn-yuan-quan/folia-sonnet/actions/workflows/android-build.yml/badge.svg)](https://github.com/cehn-yuan-quan/folia-sonnet/actions/workflows/android-build.yml)
