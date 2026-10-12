@@ -68,14 +68,13 @@ jobs:
           KS_B64: ${{ secrets.KEYSTORE_BASE64 }}
           KS_PASS: ${{ secrets.KEYSTORE_PASSWORD }}
           KS_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KS_KEYPASS: ${{ secrets.KEY_PASSWORD }}
         run: |
           if [ -n "$KS_B64" ]; then
-            printf '%s' "$KS_B64" | base64 -d > android/tianfu-release.jks
+            printf '%s' "$KS_B64" | base64 -d > android/app/tianfu-release.jks
             printf 'storeFile=tianfu-release.jks\n' > android/keystore.properties
             printf 'storePassword=%s\n' "$KS_PASS" >> android/keystore.properties
             printf 'keyAlias=%s\n' "$KS_ALIAS" >> android/keystore.properties
-            printf 'keyPassword=%s\n' "$KS_KEYPASS" >> android/keystore.properties
+            printf 'keyPassword=%s\n' "$KS_PASS" >> android/keystore.properties
           fi
 
       - name: Assemble release APK
