@@ -1,13 +1,13 @@
 {
   "name": "folia-major",
-  "productName": "Folia",
-  "description": "Lyrics Reimagine",
+  "productName": "天府",
+  "description": "天府 · 辞曲新境（Folia Android 定制版）",
   "author": {
     "name": "chthollyphile",
     "email": "chthollyphile@users.noreply.github.com"
   },
   "private": true,
-  "version": "0.6.7",
+  "version": "0.6.7-tianfu.1",
   "license": "AGPL-3.0",
   "type": "module",
   "main": "electron/main.cjs",
@@ -48,7 +48,7 @@
   },
   "build": {
     "appId": "top.izuna.foliamajor",
-    "productName": "Folia",
+    "productName": "天府",
     "generateUpdatesFilesForAllChannels": true,
     "directories": {
       "output": "release"

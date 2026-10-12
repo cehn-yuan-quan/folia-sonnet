@@ -1,70 +1,42 @@
-# Folia-Sonnet 
+# 天府（Tianfu）
 
-这是将 Folia 打包到 Android 平台的实验性项目，不是官方 Android 客户端，也不代表 Folia 主项目的移动端计划。本仓库版本基于 Folia-major 0.6.7正式版，请按照下面的说明自行构建。**项目不提供构建完成的安卓安装包**。
+> 辞曲新境 · Folia Android 定制版
 
-> [!WARNING]
-> 本仓库仅作为安卓端打包示范，不会继续维护并同步 Folia-major 主仓库的更新。功能、兼容性、构建链均可能随时失效；请自行 fork、审计并维护你的副本。
+**天府** 是基于 [chthollyphile/folia-major](https://github.com/chthollyphile/folia-major) 0.6.7 与
+[chthollyphile/folia-sonnet](https://github.com/chthollyphile/folia-sonnet)（官方 Android 打包示范）的
+个人定制版，用于个人学习与非商业分享。
 
-## 范围与限制
+以全屏沉浸式歌词动画为核心的在线音乐播放器，支持网易云、酷狗、Navidrome 与本地音乐库。
 
-此安卓构建不包含内置的在线音乐后端，你需要按照 web 版本部署的方案自行部署后端服务。
+## 与原版的关系
 
-- Android 容器基于 Capacitor，主要用于验证 Folia 的界面与前台播放体验。
-- 不承诺本地音乐扫描、后台/锁屏连续播放、Android 前台媒体服务或应用商店发布支持。
-- 在线音乐、歌词、封面及其他第三方内容的版权归相应权利人所有。请遵守所在地法律及服务条款，并通过官方渠道支持正版内容。
+- 本仓库 fork 自 `folia-sonnet`（基于 folia-major 0.6.7 正式版 + Capacitor 8 Android 容器）。
+- 仅做了品牌定制（应用名「天府」）、构建流水线（GitHub Actions 自动构建）与少量构建配置调整。
+- 上游声明：Android 打包为实验性示范，不承诺本地音乐扫描、后台/锁屏连续播放、前台媒体服务
+  或应用商店发布支持，构建链可能随上游变化失效。
 
-## Android 构建
+## 构建
 
-准备 Node.js 20+、JDK 17、Android Studio 以及 Android SDK 后：
+本仓库不直接提供安装包，通过 GitHub Actions 自动构建（[.github/workflows/android-build.yml](.github/workflows/android-build.yml)）：
 
-```bash
-npm ci
-```
+- 默认产出 **debug APK**（用于测试分发）；
+- 在仓库 Secrets 中配置签名密钥后，自动追加产出**签名 release APK**：
+  - `KEYSTORE_BASE64`（keystore 文件的 base64）、`KEYSTORE_PASSWORD`、`KEY_ALIAS`、`KEY_PASSWORD`。
 
-复制 `.env.example` 为 `.env.local`，按需部署对应的后端服务：
+后端服务（网易云 / 酷狗 API 实例）通过仓库 **Variables** 注入（构建时写入 `.env.local`）：
 
-- `VITE_NETEASE_API_BASE`：网易云 API 实例。
-- `VITE_KUGOU_API_BASE`：Web 版 KuGouMusicApi 实例。
-- `VITE_FOLIA_API_BASE`：AI 主题或歌词代理所需的 HTTPS API 根地址。
+- `NETEASE_API_BASE`、`KUGOU_API_BASE`、`FOLIA_API_BASE`（AI 主题/歌词代理，需 HTTPS）。
 
-前两者可以参考主仓库 web 版本的部署方法。`VITE_FOLIA_API_BASE` 的部署方法见下文
+本地构建与签名说明见上游 [技术与开发说明](docs/technical.md#android--capacitor)。
 
-Windows 构建调试 APK：
+## 许可证与免责声明
 
-```bash
-npm run build:android:debug
-```
+本项目采用 [AGPL-3.0](LICENSE) 许可证：修改、分发均须以同样许可证开源，并向接收者提供源码。
 
-macOS/Linux：
+在线音乐、歌词、封面及其他第三方内容的版权归相应权利人所有。本项目仅供个人学习、技术交流与
+非营利使用，请勿用于商业盈利用途；因在线资源的传播、加工或再分发引发的责任由使用者自行承担。
+请尊重数字版权，并通过官方渠道支持正版音乐。
 
-```bash
-npm run cap:sync:android
-cd android
-./gradlew assembleDebug
-```
+## 致谢
 
-输出文件：`android/app/build/outputs/apk/debug/app-debug.apk`。
-
-发布 AAB、签名和完整工具链说明见 [技术与开发说明](docs/technical.md#android--capacitor)。
-
-## 部署 Folia API 到 Vercel
-
-`VITE_FOLIA_API_BASE` 指向本仓库的 Vercel Serverless API，用于 AI 主题生成和歌词代理。部署步骤：
-
-1. 将此仓库 fork 到你的 GitHub 账号，在 Vercel 中选择 **Add New → Project** 并导入该 fork；保留仓库中的 `vercel.json` 默认构建配置。
-2. 在 Vercel 项目的 **Settings → Environment Variables** 中配置一种 AI 提供商：
-   - Gemini：`GEMINI_API_KEY`。
-   - OpenAI 兼容服务：`OPENAI_API_KEY`、`OPENAI_API_URL` 和 `OPENAI_API_MODEL`；可选 `OPENAI_API_TEMPERATURE`。
-3. 部署完成后，将 Android 本地 `.env.local` 中的值设为：
-
-   ```env
-   VITE_FOLIA_API_BASE=https://你的-vercel-项目.vercel.app/api
-   ```
-
-4. 重新执行 `npm run build:android:debug`。
-
-密钥只应填写在 Vercel 环境变量中，绝不能写入 `.env.local`、`VITE_*` 或 APK。该 API 为跨域客户端设计，部署者应自行承担访问控制、配额与费用风险；不要为没有限额或滥用防护的高额度密钥公开部署。
-
-## 许可证
-
-本项目采用 [AGPL-3.0](LICENSE) 许可证。使用、修改或分发前请阅读许可证全文。
+感谢 Folia 主项目 [chthollyphile/folia-major](https://github.com/chthollyphile/folia-major) 及其贡献者。

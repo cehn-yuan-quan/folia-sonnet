@@ -4,14 +4,14 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'top.izuna.foliamajor',
-  appName: 'Folia',
+  appName: '天府',
   webDir: 'dist',
   loggingBehavior: 'debug',
   backgroundColor: '#09090b',
   server: {
     androidScheme: 'https',
     hostname: 'localhost',
-    cleartext: false,
+    cleartext: true,
   },
   plugins: {
     SplashScreen: {
